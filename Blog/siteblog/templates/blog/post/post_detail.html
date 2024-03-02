@@ -1,0 +1,41 @@
+{%extends 'base.html'%}
+{%block CONTENT%}
+<div class="card mt-5">
+    <div class="card-header">
+        Опубликовано <b>{{post.published}}</b>
+        <br>
+        Обновлено <b>{{post.updated}}</b>
+        <br>
+        Автор <b>{{post.author}}</b>
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{post.title}}</h5>
+        <p class="card-text">{{post.content|linebreaks}}</p>
+    </div>
+</div>
+<a class="btn btn-primary mt-2" href="{%url 'blog:email_share_post' post_id=post.id%}" role="button">Поделиться
+    постом</a>
+<div class="mt-5">
+    {%with comments.count as total_comments%}
+    <h4>
+        {{total_comments}} комментариев.
+    </h4>
+    {%endwith%}
+    {%for comment in comments%}
+    <div class="card mt-3">
+        <div class="card-header">
+            {{comment.name}} |
+            {{comment.created}} |
+        </div>
+        <div class="card-body">
+            {{comment.body|linebreaks}}
+        </div>
+    </div>
+    {%empty%}
+    <h4>Нет комментариев.</h4>
+    {%endfor%}
+    <h4 class="mb-3 mt-3">Оставить комментарий:</h4>
+    {%include 'blog/post/inc/comment_form.html'%}
+</div>
+    {%endblock%}
+

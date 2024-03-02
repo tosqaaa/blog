@@ -1,0 +1,18 @@
+{%extends 'base.html'%}
+{%block CONTENT%}
+
+    {%for post in posts%}
+    <div class="card mt-5">
+        <div class="card-header">
+            Опубликовано {{post.published}} Обновлено {{post.updated}}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{post.title}}</h5>
+            <p class="card-text">{{post.content|truncatewords:10}}</p>
+            <a href="{{post.get_absolute_url}}" class="btn btn-primary">Подробнее</a>
+        </div>
+    </div>
+    {%endfor%}
+    {%include 'inc/paginator.html' with page_obj=page_obj%}
+{%endblock%}
+

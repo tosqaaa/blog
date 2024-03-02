@@ -1,0 +1,9 @@
+{%extends 'base.html'%}
+{%block CONTENT%}
+{%if comment%}
+<h2>Ваш комментарий был успешно добавлен</h2>
+<p><a href="{{post.get_absolute_url}}">Back to the post</a></p>
+{%else%}
+{%include 'blog/post/inc/comment_form.html'%}
+{%endif%}
+{%endblock%}
