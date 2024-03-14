@@ -15,6 +15,16 @@
 </div>
 <a class="btn btn-primary mt-2" href="{%url 'blog:email_share_post' post_id=post.id%}" role="button">Поделиться
     постом</a>
+ <h3>Похожие посты</h3>
+    {%for post in similar_posts%}
+    <div class="card mt-3">
+        <div class="card-header">
+            <a href="{{post.get_absolute_url}}">{{post.title}}</a>
+        </div>
+    </div>
+    {%empty%}
+    Нет похожих постов
+    {%endfor%}
 <div class="mt-5">
     {%with comments.count as total_comments%}
     <h4>
@@ -36,6 +46,8 @@
     {%endfor%}
     <h4 class="mb-3 mt-3">Оставить комментарий:</h4>
     {%include 'blog/post/inc/comment_form.html'%}
+
+
 </div>
     {%endblock%}
 

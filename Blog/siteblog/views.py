@@ -1,9 +1,11 @@
 from Blog.settings import EMAIL_HOST_USER
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.db.models import Count
 from django.shortcuts import render, get_object_or_404
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView
+from taggit.models import Tag
 
 from .forms import EmailPostForm, CommentPostForm
 from .models import Post
@@ -15,6 +17,20 @@ class PostListView(ListView):
     paginate_by = 3
     template_name = 'blog/post/post_list.html'
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        slug = self.kwargs.get('slug')
+        if slug:
+            context['tag'] = get_object_or_404(Tag, slug=slug)
+        return context
+
+    def get_queryset(self):
+        slug = self.kwargs.get('slug')
+        if slug:
+            tag = get_object_or_404(Tag, slug=slug)
+            return Post.publish.filter(tags__in=[tag])
+        return Post.publish.all()
+
 
 def post_detail(request, year, month, day, slug):
     post = get_object_or_404(Post, slug=slug, published__year=year, published__month=month, published__day=day,
@@ -22,10 +38,15 @@ def post_detail(request, year, month, day, slug):
 
     comments = post.comments.filter(active=True)
     form = CommentPostForm()
+
+    post_tags_ids = post.tags.values_list('id', flat=True)
+    similar_posts = Post.publish.filter(tags__in=post_tags_ids).exclude(id=post.id)
+    similar_posts = similar_posts.annotate(same_tags=Count('tags')).order_by('-same_tags', '-published')[:4]
     context = {
         'post': post,
         'comments': comments,
-        'form': form
+        'form': form,
+        'similar_posts': similar_posts
     }
     return render(request, template_name='blog/post/post_detail.html', context=context)
 
