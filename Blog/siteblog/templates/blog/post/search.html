@@ -1,0 +1,30 @@
+{%extends 'base.html'%}
+{%load blog_tags%}
+
+{%block CONTENT%}
+{%if query%}
+<h2 class="mt-5">Посты содержащие "{{query}}"</h2>
+<h4>
+    {%with results.count as total_results%}
+    Найдено {{total_results}} постов
+    {%endwith%}
+</h4>
+{%for post in results%}
+<div class="card mt-4">
+    <div class="card-header">
+        <a href="{{post.get_absolute_url}}">{{post.title}}</a>
+    </div>
+    <div class="card-body">
+        {{post.content|truncatewords:10}}
+    </div>
+</div>
+{%endfor%}
+<p><a href="{%url 'blog:post_search'%}">Искать снова</a></p>
+{%else%}
+<h2>Поиск поста</h2>
+<form method="get">
+    {{form.as_p}}
+    <button class="btn btn-outline-success" type="submit">Поиск</button>
+</form>
+{%endif%}
+{%endblock%}

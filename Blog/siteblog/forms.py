@@ -27,3 +27,10 @@ class CommentPostForm(forms.ModelForm):
             'email': 'Почта',
             'body': 'Текст'
         }
+
+
+class SearchForm(forms.Form):
+    query = forms.CharField(max_length=128, label="Поиск", widget=forms.TextInput(attrs={'class': 'form-control me-2',
+                                                                                         'type': 'search',
+                                                                                         'placeholder': 'Поиск',
+                                                                                         'aria-label': "Поиск"}))
